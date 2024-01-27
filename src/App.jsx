@@ -1,6 +1,54 @@
-import { Box, Button, Container, List, ListItem, TextField, Tooltip, Typography } from '@mui/material'
+import {
+    Box,
+    Button,
+    Checkbox,
+    Container,
+    FormControlLabel,
+    List,
+    ListItem,
+    MenuItem,
+    Select,
+    TextField,
+    Tooltip,
+    Typography,
+} from '@mui/material'
 import { useEffect, useState } from 'react'
-import { getTodos, addTodo, removeTodo } from './db'
+import { getTodos, addTodo, updateTodo, removeTodo } from './db'
+
+const PrioritySelect = ({ todo }) => {
+    const [priority, setPriority] = useState(todo.priority)
+
+    const handleUpdateTodo = (event) => {
+        setPriority(event.target.value)
+        updateTodo(todo.id, { priority: event.target.value })
+    }
+
+    return (
+        <Select sx={{ width: 100 }} value={priority} onChange={handleUpdateTodo}>
+            <MenuItem value="low">Low</MenuItem>
+            <MenuItem value="normal">Normal</MenuItem>
+            <MenuItem value="high">High</MenuItem>
+        </Select>
+    )
+}
+
+const CompletedCheckbox = ({ todo }) => {
+    const [completed, setCompleted] = useState(todo.completed)
+
+    const handleUpdateTodo = (event) => {
+        setCompleted(event.target.checked)
+        updateTodo(todo.id, { completed: event.target.checked })
+    }
+
+    return (
+        <FormControlLabel
+            sx={{ marginLeft: 1, marginRight: 1, alignSelf: 'center' }}
+            label="Completed"
+            labelPlacement="start"
+            control={<Checkbox checked={completed} onChange={handleUpdateTodo} />}
+        />
+    )
+}
 
 const App = () => {
     const [todos, setTodos] = useState([])
@@ -15,7 +63,7 @@ const App = () => {
 
         const newId = await addTodo(todoContent)
 
-        setTodos([...todos, { id: newId, content: todoContent }])
+        setTodos([...todos, { id: newId, content: todoContent, priority: 'normal', completed: false }])
         setTodoContent('')
     }
 
@@ -58,7 +106,9 @@ const App = () => {
                 {todos.map((todo) => (
                     <ListItem sx={{ display: 'list-item' }} key={todo.id}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                            <Typography sx={{ width: 550, marginRight: 1 }}>{todo.content}</Typography>
+                            <Typography sx={{ width: 560, marginRight: 1 }}>{todo.content}</Typography>
+                            <PrioritySelect todo={todo} />
+                            <CompletedCheckbox todo={todo} />
                             <Button
                                 sx={{ alignSelf: 'center' }}
                                 variant="contained"
