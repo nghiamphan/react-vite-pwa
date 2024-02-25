@@ -19,4 +19,4 @@ https://to-dos-pwa-react.fly.dev/
 # Introduction
 
 A progressive web app using React and vite-plugin-pwa.
-The app allows user to create, set priority and cross off to-to tasks.
+The app allows user to create, set priority and cross off to-do tasks.
